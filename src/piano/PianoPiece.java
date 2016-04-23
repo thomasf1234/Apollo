@@ -16,7 +16,7 @@ import javax.sound.midi.ShortMessage;
 //https://www.youtube.com/watch?v=3f1nMgbthiE
 //http://stackoverflow.com/questions/25859950/midi-java-generates-messed-sound
 public class PianoPiece {
-
+/*
     public static PianoPiece newFrom(MidiReader midi_reader) {
         int[] types = new int[]{ShortMessage.NOTE_ON, ShortMessage.NOTE_OFF};
         MidiEvent[] midi_events = midi_reader.getEvents(types);
@@ -24,5 +24,5 @@ public class PianoPiece {
         //http://stackoverflow.com/questions/2038313/midi-ticks-to-actual-playback-seconds-midi-music
         Note[] notes = new 
         return null;
-    }
+    }*/
 }

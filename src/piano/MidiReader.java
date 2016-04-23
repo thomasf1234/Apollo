@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MetaMessage;
 
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
@@ -25,45 +26,45 @@ import javax.sound.midi.Track;
  * @author ad
  */
 public class MidiReader {
+    public static final int SET_TEMPO = 0x51;
+    public static final int DEFAULT_TEMPO = 500000;
     private final Sequence sequence;
     
     public MidiReader(String midi_path) throws InvalidMidiDataException, IOException {
       this.sequence = MidiSystem.getSequence(new File(midi_path));
     }
-    //http://mido.readthedocs.org/en/latest/meta_message_types.html
-    public void time() {
+    
+    public TimeStampedMidiEvent[] getTimeStampedMidiEvents(int[] types) throws InvalidMidiDataException {       
+        List<MidiEvent> midiEvents = getMidiEvents(types);
+        sortMidiEventsChronologically(midiEvents);
         
-        //Verify the division type of the sequence (PPQ, SMPT)
-        if(this.sequence.getDivisionType() == Sequence.PPQ)
-        {
-            int     ppq         = this.sequence.getResolution();
-            //Do the math to get the time (in miliseconds) each tick takes 
-            long    tickTime    = TicksToMiliseconds(BPM,ppq);
-            //Returns the number of ticks from the longest track
-            int     longestTrackTicks   = LongestTrackTicks(tracks);
-
-            //Each iteration sends a new message to 'receiver'
-            for(int tick = 0; tick < maiorTick ; tick++)
-            {   
-                //Iteration of each track
-                for(int trackNumber = 0; trackNumber < tracks.length; trackNumber++)
-                {
-                    //If the number of ticks from a track isn't already finished
-                    //continue
-                    if(tick < tracks[trackNumber].size())
-                    {
-                        MidiEvent ev = tracks[trackNumber].get(tick);
-                        rcv.send(ev.getMessage(),-1);
-                    }
+        TimeStampedMidiEvent[] timeStampedMidiEvents = new TimeStampedMidiEvent[midiEvents.size()];
+        
+        int currentTempo = DEFAULT_TEMPO;
+        double currentTime = 0;
+        long currentTick = 0;
+        for (int i = 0; i < midiEvents.size(); i++) {
+            MidiEvent midiEvent = midiEvents.get(i);
+            MidiMessage midiMessage = midiEvent.getMessage();
+            if (midiMessage instanceof MetaMessage) {
+                MetaMessage metaMessage = (MetaMessage) midiMessage;
+                if (metaMessage.getType() == SET_TEMPO) {
+                    byte[] data = metaMessage.getData();
+                    currentTempo = (data[0] & 0xFF) << 16 | (data[1] & 0xFF) << 8 | (data[2] & 0xFF);
+                    //System.out.println("SET_TEMPO: " + currentTempo);
                 }
-                Thread.sleep(tickTime);
             }
-
+            //System.out.println("tick diff: " + (midiEvent.getTick() - currentTick) + " tempo: " + currentTempo);
+            currentTime += ((midiEvent.getTick() - currentTick) / ticksPerSecond(currentTempo));
+            currentTick = midiEvent.getTick();
+            timeStampedMidiEvents[i] = new TimeStampedMidiEvent(currentTime, midiEvent);
         }
+
+        return timeStampedMidiEvents;
     }
     
-    public MidiEvent[] getEvents(int[] types) {
-        List<MidiEvent> midi_events = new ArrayList<MidiEvent>();
+    public List<MidiEvent> getMidiEvents(int[] types) {
+        List<MidiEvent> midiEvents = new ArrayList<MidiEvent>();
         
         for (Track track : this.sequence.getTracks()) {
             for (int i=0; i < track.size(); i++) { 
@@ -72,15 +73,20 @@ public class MidiReader {
                 if (message instanceof ShortMessage) {
                     ShortMessage sm = (ShortMessage) message;
                     if (Utilities.contains(types, sm.getCommand())) {
-                        midi_events.add(event);
+                        midiEvents.add(event);
+                    } 
+                } else if (message instanceof MetaMessage) {
+                    MetaMessage mm = (MetaMessage) message;
+                    if (Utilities.contains(types, mm.getType())) {
+                        midiEvents.add(event);
                     } 
                 }
             }
         }
         
-        sortMidiEventsChronologically(midi_events);
-       
-        return midi_events.toArray(new MidiEvent[midi_events.size()]);
+        sortMidiEventsChronologically(midiEvents);
+        return midiEvents;
+        //return midi_events.toArray(new MidiEvent[midi_events.size()]);
     }
     
     private void sortMidiEventsChronologically(List<MidiEvent> midi_events){
@@ -96,6 +102,25 @@ public class MidiReader {
                 }           
             }
         });     
+    }
+    
+    private double ticksPerSecond(int tempo) throws InvalidMidiDataException {
+        float fDivisionType = sequence.getDivisionType();
+        double beatsPerMinute = 60000000.0f / tempo;
+        
+        if (fDivisionType == Sequence.PPQ) {
+            return sequence.getResolution() * (beatsPerMinute / 60.0);
+        } else if (fDivisionType == Sequence.SMPTE_24) {
+            return sequence.getResolution() * 24.0;
+        } else if (fDivisionType == Sequence.SMPTE_25) {
+            return sequence.getResolution() * 25.0;
+        } else if (fDivisionType == Sequence.SMPTE_30DROP) {
+            return sequence.getResolution() * 29.97;
+        } else if (fDivisionType == Sequence.SMPTE_30) {
+            return sequence.getResolution() * 30;
+        } else {
+            throw new InvalidMidiDataException("Unknown division type: " + fDivisionType);
+        }
     }
 }
 
