@@ -86,7 +86,6 @@ public class MidiReader {
         
         sortMidiEventsChronologically(midiEvents);
         return midiEvents;
-        //return midi_events.toArray(new MidiEvent[midi_events.size()]);
     }
     
     private void sortMidiEventsChronologically(List<MidiEvent> midi_events){

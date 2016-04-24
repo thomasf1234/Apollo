@@ -43,10 +43,11 @@ public class IntervalTest {
     @Test
     public void testGetStartTime() {
         System.out.println("getStartTime");
-        Interval instance = new Interval(3, 10);
-        int expResult = 3;
-        int result = instance.getStartTime();
-        assertEquals(expResult, result);
+        Interval instance = new Interval(3.01, 10.04);
+        double delta = 0.001;
+        double expResult = 3.01;
+        double result = instance.getStartTime();
+        assertEquals(expResult, result, delta);
     }
 
     /**
@@ -55,10 +56,11 @@ public class IntervalTest {
     @Test
     public void testGetEndTime() {
         System.out.println("getEndTime");
-        Interval instance = new Interval(3, 10);
-        int expResult = 10;
-        int result = instance.getEndTime();
-        assertEquals(expResult, result);
+        Interval instance = new Interval(3.0, 10.04);
+        double delta = 0.001;
+        double expResult = 10.04;
+        double result = instance.getEndTime();
+        assertEquals(expResult, result, delta);
     }
 
     /**
@@ -67,10 +69,11 @@ public class IntervalTest {
     @Test
     public void testGetDuration() {
         System.out.println("getDuration");
-        Interval instance = new Interval(3, 10);
-        int expResult = 7;
-        int result = instance.getDuration();
-        assertEquals(expResult, result);
+        Interval instance = new Interval(3.01, 10.04);
+        double delta = 0.001;
+        double expResult = 7.03;
+        double result = instance.getDuration();
+        assertEquals(expResult, result, delta);
     }
     
 }

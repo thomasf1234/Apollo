@@ -10,23 +10,23 @@ package piano;
  * @author ad
  */
 public class Interval {
-    private final int start_time;
-    private final int end_time;
+    private final double start_time;
+    private final double end_time;
     
-    public Interval(int start_time, int end_time) {
+    public Interval(double start_time, double end_time) {
         this.start_time = start_time;
         this.end_time = end_time;
     }
     
-    public int getStartTime() {
+    public double getStartTime() {
         return this.start_time;
     }
     
-    public int getEndTime() {
+    public double getEndTime() {
         return this.end_time;
     }
     
-    public int getDuration() {
+    public double getDuration() {
         return (this.end_time - this.start_time);
     }
 }
