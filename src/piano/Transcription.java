@@ -5,7 +5,7 @@
  */
 package piano;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +15,8 @@ import java.util.List;
 public class Transcription {
     public List actions;
     
-    public Transcription(KeyPress[] keyPresses) {
-        this.actions = Arrays.asList(keyPresses);
+    public Transcription(List<KeyPress> keyPresses) {
+        this.actions = new ArrayList();
+        this.actions.addAll(keyPresses);
     }
 }

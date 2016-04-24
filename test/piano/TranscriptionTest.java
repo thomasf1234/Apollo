@@ -5,7 +5,9 @@
  */
 package piano;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,11 +42,11 @@ public class TranscriptionTest {
 
     @Test
     public void testProperties() {
-        KeyPress[] keyPresses = new KeyPress[2];
-        keyPresses[0] = new KeyPress(66, 60, new Interval(2.0, 5.5));
-        keyPresses[1] = new KeyPress(67, 60, new Interval(2.0, 5.5));
+        List<KeyPress> keyPresses = new ArrayList<KeyPress>();
+        keyPresses.add(new KeyPress(66, 60, new Interval(2.0, 5.5)));
+        keyPresses.add(new KeyPress(67, 60, new Interval(2.0, 5.5)));
         
-        assertEquals(Arrays.asList(keyPresses), new Transcription(keyPresses).actions);
+        assertEquals(keyPresses, new Transcription(keyPresses).actions);
     }
     
 }
