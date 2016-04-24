@@ -34,7 +34,7 @@ public class MidiReader {
       this.sequence = MidiSystem.getSequence(new File(midi_path));
     }
     
-    public TimeStampedMidiEvent[] getTimeStampedMidiEvents(int[] types) throws InvalidMidiDataException {       
+    public TimeStampedMidiEvent[] getChronologicalMidiEvents(int[] types) throws InvalidMidiDataException {       
         List<MidiEvent> midiEvents = getMidiEvents(types);
         sortMidiEventsChronologically(midiEvents);
         

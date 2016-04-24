@@ -84,13 +84,6 @@ public class MidiReaderTest {
         expected_velocity = 0;
         expected_tick = 1536;
         
-        
-        // @1024 Channel: 0 Note on, C#4 key=61 velocity: 15
-      
-        //for (int i = 0; i < 16; i++) {
-        //    sm = (ShortMessage) result2[i].getMessage();
-        //    System.out.println("@" + result2[i].getTick() + " " + sm.getCommand() + ", key=" + sm.getData1() + " velocity: " + sm.getData2());
-        //}
         sm = (ShortMessage) result2.get(7).getMessage();
         assertEquals(expected_event_type, sm.getCommand());
         assertEquals(expected_key, sm.getData1());
@@ -103,11 +96,11 @@ public class MidiReaderTest {
      * Test of getTimeStampedMidiEvents method, of class MidiReader.
      */
     @Test
-    public void testGetTimeStampedMidiEvents() throws Exception {
+    public void testGetChronologicalMidiEvents() throws Exception {
         System.out.println("getTimeStampedMidiEvents");
         int[] types = new int[]{ShortMessage.NOTE_ON, ShortMessage.NOTE_OFF, MidiReader.SET_TEMPO};
         MidiReader instance = new MidiReader("test\\samples\\test2.mid");
-        TimeStampedMidiEvent[] timeStampedMidiEvents = instance.getTimeStampedMidiEvents(types);
+        TimeStampedMidiEvent[] timeStampedMidiEvents = instance.getChronologicalMidiEvents(types);
         assertEquals(3124, timeStampedMidiEvents.length);
         
         assertEquals(1024, timeStampedMidiEvents[6].rawMidiEvent.getTick());
