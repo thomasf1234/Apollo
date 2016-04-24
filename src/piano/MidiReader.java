@@ -26,6 +26,7 @@ import javax.sound.midi.Track;
  * @author ad
  */
 public class MidiReader {
+    public static final int END_OF_TRACK = 0x2F;
     public static final int SET_TEMPO = 0x51;
     public static final int DEFAULT_TEMPO = 500000;
     private final Sequence sequence;

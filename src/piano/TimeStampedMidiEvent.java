@@ -5,6 +5,7 @@
  */
 package piano;
 
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.ShortMessage;
@@ -26,9 +27,12 @@ public class TimeStampedMidiEvent {
         MidiMessage midiMessage = this.rawMidiEvent.getMessage();
         if (midiMessage instanceof ShortMessage) {
             ShortMessage shortMessage = (ShortMessage) midiMessage;
-            if (shortMessage.getCommand() == ShortMessage.NOTE_ON) {
+            int command = shortMessage.getCommand();
+            int velocity = shortMessage.getData2();
+            
+            if (command == ShortMessage.NOTE_ON && velocity > 0) {
                 return true;
-            }
+            } 
         }
         
         return false;
@@ -46,6 +50,18 @@ public class TimeStampedMidiEvent {
             } 
         }
         
+        return false;
+    }
+    
+    public boolean isEndOfTrack() {
+        MidiMessage midiMessage = this.rawMidiEvent.getMessage();
+        if (midiMessage instanceof MetaMessage) {
+            MetaMessage metaMessage = (MetaMessage) midiMessage;
+            if (metaMessage.getType() == MidiReader.END_OF_TRACK) {
+                return true;
+            }
+        }
+
         return false;
     }
 }
