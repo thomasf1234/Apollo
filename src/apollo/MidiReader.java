@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package piano;
+package apollo;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +28,7 @@ import javax.sound.midi.Track;
 public class MidiReader {
     public static final int END_OF_TRACK = 0x2F;
     public static final int SET_TEMPO = 0x51;
+    public static final int SUSTAIN_PEDAL = 0x40;
     public static final int DEFAULT_TEMPO = 500000;
     private final Sequence sequence;
     
@@ -52,10 +53,9 @@ public class MidiReader {
                 if (metaMessage.getType() == SET_TEMPO) {
                     byte[] data = metaMessage.getData();
                     currentTempo = (data[0] & 0xFF) << 16 | (data[1] & 0xFF) << 8 | (data[2] & 0xFF);
-                    //System.out.println("SET_TEMPO: " + currentTempo);
                 }
             }
-            //System.out.println("tick diff: " + (midiEvent.getTick() - currentTick) + " tempo: " + currentTempo);
+
             currentTime += ((midiEvent.getTick() - currentTick) / ticksPerSecond(currentTempo));
             currentTick = midiEvent.getTick();
             timeStampedMidiEvents[i] = new TimeStampedMidiEvent(currentTime, midiEvent);

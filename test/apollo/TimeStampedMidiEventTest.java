@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package piano;
+package apollo;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,6 +87,21 @@ public class TimeStampedMidiEventTest {
         
         TimeStampedMidiEvent eventWithMetaMessage = new TimeStampedMidiEvent(0.0, tracks[1].get(0));
         assertEquals(false, eventWithMetaMessage.isNoteOff());
+    }
+    
+    @Test
+    public void testIsSustainPedal() throws InvalidMidiDataException, IOException {
+        System.out.println("isSustainPedal");
+        Track[] tracks = MidiSystem.getSequence(new File("test\\samples\\test2.mid")).getTracks();
+        TimeStampedMidiEvent sustainPedalEvent = new TimeStampedMidiEvent(0.0, tracks[1].get(3));
+
+        assertEquals(true, sustainPedalEvent.isSustainPedal());
+        
+        TimeStampedMidiEvent noteOffEvent = new TimeStampedMidiEvent(0.0, tracks[1].get(7));
+        assertEquals(false, noteOffEvent.isSustainPedal());    
+        
+        TimeStampedMidiEvent eventWithMetaMessage = new TimeStampedMidiEvent(0.0, tracks[1].get(0));
+        assertEquals(false, eventWithMetaMessage.isSustainPedal());
     }
     
     /**

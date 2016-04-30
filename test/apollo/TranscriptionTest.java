@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package piano;
+package apollo;
 
+import apollo.Transcription;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,11 +44,17 @@ public class TranscriptionTest {
 
     @Test
     public void testProperties() {
-        List<KeyPress> keyPresses = new ArrayList<KeyPress>();
-        keyPresses.add(new KeyPress(66, 60, new Interval(2.0, 5.5)));
-        keyPresses.add(new KeyPress(67, 60, new Interval(2.0, 5.5)));
-        
-        assertEquals(keyPresses, new Transcription(keyPresses).actions);
+        List<PianoEvent> pianoEvents = new ArrayList<PianoEvent>();
+        Map data1 = new HashMap();
+        data1.put("key", 66);
+        data1.put("velocity", 60);
+        pianoEvents.add(new PianoEvent(PianoEvent.NOTE_ON, 2.0, data1));
+
+        Map data2 = new HashMap();
+        data2.put("value", 127);
+        pianoEvents.add(new PianoEvent(PianoEvent.SUSTAIN_PEDAL, 2.5, data2));
+
+        assertEquals(pianoEvents, new Transcription(pianoEvents).pianoEvents);
     }
     
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package piano;
+package apollo;
 
 import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
@@ -46,6 +46,21 @@ public class TimeStampedMidiEvent {
             int velocity = shortMessage.getData2();
             
             if (command == ShortMessage.NOTE_OFF || (command == ShortMessage.NOTE_ON && velocity == 0)) {
+                return true;
+            } 
+        }
+        
+        return false;
+    }
+    
+    public boolean isSustainPedal() {
+        MidiMessage midiMessage = this.rawMidiEvent.getMessage();
+        if (midiMessage instanceof ShortMessage) {
+            ShortMessage shortMessage = (ShortMessage) midiMessage;
+            int command = shortMessage.getCommand();
+            int type = shortMessage.getData1();
+            
+            if (command == ShortMessage.CONTROL_CHANGE && type == MidiReader.SUSTAIN_PEDAL) {
                 return true;
             } 
         }
