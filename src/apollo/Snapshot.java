@@ -23,62 +23,39 @@ import javax.imageio.ImageIO;
 public class Snapshot {
 
     public BufferedImage background;
-    public BufferedImage cDown;
-    public BufferedImage cSharpDown;
-    public BufferedImage gSharpDown;
+    private final BufferedImage[] DOWN_KEYS;
     private static final int OCTAVE_WIDTH = 140;
-    private static final Map<String, Point> KEY_POSITION_MAP = initializeKEY_POSITION_MAP();
-
-    private static Map<String, Point> initializeKEY_POSITION_MAP() {
-        Map<String, Point> result = new HashMap<String, Point>();
-        result.put("A0", new Point(141 - (1 * OCTAVE_WIDTH), 599));
-        result.put("A#1", new Point(157 - (1 * OCTAVE_WIDTH), 599));
-        result.put("B0", new Point(161 - (1 * OCTAVE_WIDTH), 599));
-
-        for (int i = 0; i < 7; i++) {
-            result.put("C" + (i + 1), new Point(41 + (i * OCTAVE_WIDTH), 599));
-            result.put("C#" + (i + 1), new Point(53 + (i * OCTAVE_WIDTH), 599));
-            result.put("D" + (i + 1), new Point(61 + (i * OCTAVE_WIDTH), 599));
-            result.put("D#" + (i + 1), new Point(76 + (i * OCTAVE_WIDTH), 599));
-            result.put("E" + (i + 1), new Point(81 + (i * OCTAVE_WIDTH), 599));
-            result.put("F" + (i + 1), new Point(101 + (i * OCTAVE_WIDTH), 599));
-            result.put("F#" + (i + 1), new Point(112 + (i * OCTAVE_WIDTH), 599));
-            result.put("G" + (i + 1), new Point(121 + (i * OCTAVE_WIDTH), 599));
-            result.put("G#" + (i + 1), new Point(134 + (i * OCTAVE_WIDTH), 599));
-            result.put("A" + (i + 1), new Point(141 + (i * OCTAVE_WIDTH), 599));
-            result.put("A#" + (i + 1), new Point(157 + (i * OCTAVE_WIDTH), 599));
-            result.put("B" + (i + 1), new Point(161 + (i * OCTAVE_WIDTH), 599));
-        }
-
-        result.put("C8", new Point(41 + (7 * OCTAVE_WIDTH), 599));
-
-        return Collections.unmodifiableMap(result);
-    }
-
+    private final Map<String, Point> KEY_POSITION_MAP;
+    public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    
     public Snapshot() throws IOException {
         this.background = ImageIO.read(new File("images\\basic_background.png"));
-        this.cDown = ImageIO.read(new File("images\\c_down.png"));
-        this.cSharpDown = ImageIO.read(new File("images\\c#_down.png"));
-        this.gSharpDown = ImageIO.read(new File("images\\g#_down.png"));
+        this.DOWN_KEYS = initializeDOWN_KEYS();
+        this.KEY_POSITION_MAP = initializeKEY_POSITION_MAP();
     }
 
-    public Image getSnapshot(float scale) throws IOException {
-        //public Image getSnapshot(Interval interval, KeyPress allKeyPresses) throws IOException {
-
+    public Image getSnapshot(Pianist pianist, float scale) throws IOException {
         BufferedImage image = new BufferedImage(this.background.getWidth(), this.background.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         g.drawImage(this.background, 0, 0, image.getWidth(), image.getHeight(), null);
 
-        //g.drawImage(this.cDown, 40, 599, null);
-        for(int i=1 ; i<8; i++) {
-          g.drawImage(this.cSharpDown, KEY_POSITION_MAP.get("C#"+i).getX(), KEY_POSITION_MAP.get("C#"+i).getY(), null);   
-          g.drawImage(this.gSharpDown, KEY_POSITION_MAP.get("G#"+i).getX(), KEY_POSITION_MAP.get("G#"+i).getY(), null);    
-        }
+        for (int midiNoteNumber=9; midiNoteNumber<97; midiNoteNumber++) {
+            int velocity = pianist.piano.getNoteState(midiNoteNumber);   
+            if (velocity > 0) {
+              String noteName = noteNameFor(midiNoteNumber);
+              int octave = octaveFor(midiNoteNumber);
+              try {
+                  g.drawImage(this.DOWN_KEYS[midiNoteNumber % 12], this.KEY_POSITION_MAP.get(noteName+octave).getX(), this.KEY_POSITION_MAP.get(noteName+octave).getY(), null);        
+              } catch(Exception e) {
+                  
+              }
+            }
+        }    
         
         BufferedImage scaledImage = scale(image, scale);
-        ImageIO.write(scaledImage, "png", new File("tmp\\saved.png"));
+        //ImageIO.write(scaledImage, "png", new File("tmp\\saved.png"));
 
-        return SwingFXUtils.toFXImage(image, null);
+        return SwingFXUtils.toFXImage(scaledImage, null);
     }
 
     public BufferedImage scale(BufferedImage bufferedImage, float scale) {
@@ -91,5 +68,57 @@ public class Snapshot {
         g.dispose();
 
         return scaledBufferedImage;
+    }
+    
+    private Map<String, Point> initializeKEY_POSITION_MAP() {
+        Map<String, Point> result = new HashMap<String, Point>();
+        result.put("A0", new Point(141 - (1 * OCTAVE_WIDTH), 599));
+        result.put("A#1", new Point(157 - (1 * OCTAVE_WIDTH), 599));
+        result.put("B0", new Point(161 - (1 * OCTAVE_WIDTH), 599));
+
+        for (int i = 0; i < 7; i++) {
+            result.put("C" + (i + 1), new Point(41 + (i * OCTAVE_WIDTH), 599));
+            result.put("C#" + (i + 1), new Point(53 + (i * OCTAVE_WIDTH), 599));
+            result.put("D" + (i + 1), new Point(61 + (i * OCTAVE_WIDTH), 599));
+            result.put("D#" + (i + 1), new Point(76 + (i * OCTAVE_WIDTH), 599));
+            result.put("E" + (i + 1), new Point(81 + (i * OCTAVE_WIDTH), 599));
+            result.put("F" + (i + 1), new Point(101 + (i * OCTAVE_WIDTH), 599));
+            result.put("F#" + (i + 1), new Point(111 + (i * OCTAVE_WIDTH), 599));
+            result.put("G" + (i + 1), new Point(121 + (i * OCTAVE_WIDTH), 599));
+            result.put("G#" + (i + 1), new Point(134 + (i * OCTAVE_WIDTH), 599));
+            result.put("A" + (i + 1), new Point(141 + (i * OCTAVE_WIDTH), 599));
+            result.put("A#" + (i + 1), new Point(157 + (i * OCTAVE_WIDTH), 599));
+            result.put("B" + (i + 1), new Point(161 + (i * OCTAVE_WIDTH), 599));
+        }
+
+        result.put("C8", new Point(41 + (7 * OCTAVE_WIDTH), 599));
+
+        return Collections.unmodifiableMap(result);
+    }
+    
+    private static BufferedImage[] initializeDOWN_KEYS() throws IOException {
+        BufferedImage[] array = new BufferedImage[12];
+        array[0] = ImageIO.read(new File("images\\c_down.png")); 
+        array[1] = ImageIO.read(new File("images\\c#_down.png")); 
+        array[2] = ImageIO.read(new File("images\\d_down.png")); 
+        array[3] = ImageIO.read(new File("images\\d#_down.png")); 
+        array[4] = ImageIO.read(new File("images\\e_down.png")); 
+        array[5] = ImageIO.read(new File("images\\f_down.png")); 
+        array[6] = ImageIO.read(new File("images\\f#_down.png")); 
+        array[7] = ImageIO.read(new File("images\\g_down.png")); 
+        array[8] = ImageIO.read(new File("images\\g#_down.png")); 
+        array[9] = ImageIO.read(new File("images\\a_down.png")); 
+        array[10] = ImageIO.read(new File("images\\a#_down.png")); 
+        array[11] = ImageIO.read(new File("images\\b_down.png")); 
+        
+        return array;
+    }
+    
+    private String noteNameFor(int midiNoteNumber) { 
+        return NOTE_NAMES[midiNoteNumber % 12];
+    }
+    
+    private int octaveFor(int midiNoteNumber) { 
+        return (midiNoteNumber / 12) - 1;
     }
 }

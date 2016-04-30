@@ -5,6 +5,12 @@
  */
 package apollo;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+
 /**
  *
  * @author ad
@@ -19,5 +25,12 @@ public class Utilities {
         }
 
         return false;
+    }
+    
+    public static boolean compareFiles(String textPath1, String textPath2) throws IOException {
+        byte[] f1 = Files.readAllBytes(Paths.get(textPath1));
+        byte[] f2 = Files.readAllBytes(Paths.get(textPath2));
+        
+        return Arrays.equals(f1, f2);
     }
 }
