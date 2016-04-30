@@ -110,7 +110,7 @@ public class PianistTest {
         assertEquals(true, runnablePianist.getThread().isAlive());
         
         //set pianist flag to FINISHED so it ends
-        runnablePianist.pianist.state = Pianist.State.FINISHED;
+        runnablePianist.pianist.finish();
         System.out.println("UPDATED STATE TO FINISHED!!!!!!!!!");
  
         //allow some time for pianist to finish

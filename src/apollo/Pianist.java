@@ -54,7 +54,7 @@ public class Pianist {
                 }
 
                 if (index == transcription.pianoEvents.size() - 1) {
-                    this.state = State.FINISHED;
+                    finish();
                     break;
                 } else {
                     index++;
@@ -72,5 +72,9 @@ public class Pianist {
     
     public boolean isFinished() {
         return this.state == State.FINISHED;
+    }
+    
+    public void finish() {
+        this.state = State.FINISHED;
     }
 }
