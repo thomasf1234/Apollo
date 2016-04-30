@@ -5,6 +5,8 @@
  */
 package apollo;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
@@ -16,25 +18,25 @@ import javax.sound.midi.Synthesizer;
  */
 public class Piano {
     private static final int PIANO = 0;
-    private static final int SUSTAIN_PEDAL_STATE_INDEX = 126;
-    //0-126 is C0-G10; 127 is SustainPedal; state is velocity/value 
-    private ThreadSafeArray states;
+    private static final int SUSTAIN_PEDAL_STATE_INDEX = 128;
+    //0-127 is C0-G10; 128 is SustainPedal; state is velocity/value 
+    private final ThreadSafeArray states;
     
     private final MidiChannel channel;
     
     public Piano() throws MidiUnavailableException {
       this.channel = initMidiChannel(PIANO);  
-      this.states = new ThreadSafeArray(127);
+      this.states = new ThreadSafeArray(129);
     }
     
     public void noteOn(int midiNoteNumber, int velocity) {
         this.channel.noteOn(midiNoteNumber, velocity); 
-        this.states.set(midiNoteNumber - 1, velocity);
+        this.states.set(midiNoteNumber, velocity);
     }
     
     public void noteOff(int midiNoteNumber) {
         this.channel.noteOff(midiNoteNumber); 
-        this.states.set(midiNoteNumber - 1, 0);
+        this.states.set(midiNoteNumber, 0);
     }
     
     public void sustainPedalUpdate(int value) {
@@ -43,7 +45,7 @@ public class Piano {
     }
     
     public int getNoteState(int midiNoteNumber) {
-        return this.states.get(midiNoteNumber - 1);
+        return this.states.get(midiNoteNumber);
     }
     
     public int getSustainPedalState() {
@@ -54,9 +56,16 @@ public class Piano {
        this.channel.setMute(mute);
     }
 
-//    public void silence() {
-//        this.channel.allNotesOff();
-//    }
+    public List<Integer> statesOn() {
+        List<Integer> notesDown = new ArrayList<Integer>();
+        for(int i=0; i<129; i++) {
+            if (getNoteState(i) > 0) {
+                notesDown.add(i);
+            }
+        }
+        
+        return notesDown;
+    }
     
     private MidiChannel initMidiChannel(int instrument) throws MidiUnavailableException  {
         Synthesizer synth = MidiSystem.getSynthesizer();

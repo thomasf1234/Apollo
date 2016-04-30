@@ -16,35 +16,35 @@ import static org.junit.Assert.*;
  *
  * @author ad
  */
-class RunnableDemo implements Runnable {
-   private Thread thread;
-   private final String threadName;
-   
-   RunnableDemo( String name){
-       threadName = name;
-   }
-   @Override
-   public void run() {
-      try {
-         for(int i = 4; i > 0; i--) {
-            System.out.println("Thread: " + threadName + ", " + i);
-            // Let the thread sleep for a while.
-            Thread.sleep(50);
-         }
-     } catch (InterruptedException e) {
-     }
-   }
-   
-   public void start ()
-   {
-      if (this.thread == null)
-      {
-         this.thread = new Thread (this, this.threadName);
-         this.thread.start ();
-      }
-   }
-
-}
+//class RunnableDemo implements Runnable {
+//   private Thread thread;
+//   private final String threadName;
+//   
+//   RunnableDemo( String name){
+//       threadName = name;
+//   }
+//   @Override
+//   public void run() {
+//      try {
+//         for(int i = 4; i > 0; i--) {
+//            System.out.println("Thread: " + threadName + ", " + i);
+//            // Let the thread sleep for a while.
+//            Thread.sleep(50);
+//         }
+//     } catch (InterruptedException e) {
+//     }
+//   }
+//   
+//   public void start ()
+//   {
+//      if (this.thread == null)
+//      {
+//         this.thread = new Thread (this, this.threadName);
+//         this.thread.start ();
+//      }
+//   }
+//
+//}
 
 public class ThreadSafeArrayTest {
     

@@ -5,7 +5,6 @@
  */
 package apollo;
 
-import java.util.Date;
 import javax.sound.midi.MidiUnavailableException;
 
 /**
@@ -13,17 +12,20 @@ import javax.sound.midi.MidiUnavailableException;
  * @author ad
  */
 public class Pianist {
-    private final Piano piano;
+    public enum State { NOT_STARTED, PLAYING, FINISHED }  
+    public final Piano piano;
+    public State state;
 
     public Pianist() throws MidiUnavailableException {
         this.piano = new Piano();
+        this.state = State.NOT_STARTED;
     }
 
     public void play(Transcription transcription) {
         double t0 = System.nanoTime() * Math.pow(10, -9);
         double elapsedTime = 0;
         int index = 0;
-        boolean finished = false;
+        this.state = State.PLAYING;
 
         PianoEvent pianoEvent = transcription.pianoEvents.get(index);
         //timing appears right, but lose a second over 3minutes most likely because if the miliseconds lost when we go to check 
@@ -31,11 +33,11 @@ public class Pianist {
         //Tet code, and clean up the Transcription
         //count lost seconds to make up
         
-        while (index < transcription.pianoEvents.size() && finished == false) {
+        while (index < transcription.pianoEvents.size() && isPlaying()) {
             elapsedTime = (System.nanoTime() * Math.pow(10, -9)) - t0;
             
-            while (elapsedTime >= pianoEvent.time) {
-                System.out.println(pianoEvent.type + " @" + pianoEvent.time + " data: " + pianoEvent.data);
+            while (elapsedTime >= pianoEvent.time && isPlaying()) {
+                //System.out.println(pianoEvent.type + " @" + pianoEvent.time + " data: " + pianoEvent.data);
 
                 switch (pianoEvent.type) {
                     case (PianoEvent.NOTE_ON):
@@ -51,9 +53,8 @@ public class Pianist {
                         break;
                 }
 
-                
                 if (index == transcription.pianoEvents.size() - 1) {
-                    finished = true;
+                    this.state = State.FINISHED;
                     break;
                 } else {
                     index++;
@@ -62,6 +63,14 @@ public class Pianist {
             }
         }
         
-        System.out.println("FINISHED");
+        System.out.println("@" + elapsedTime + " NOW FINISHED");
+    }
+    
+    public boolean isPlaying() {
+        return this.state == State.PLAYING;
+    }
+    
+    public boolean isFinished() {
+        return this.state == State.FINISHED;
     }
 }
