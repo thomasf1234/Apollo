@@ -6,10 +6,6 @@
 package apollo;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import org.junit.After;
@@ -23,36 +19,6 @@ import static org.junit.Assert.*;
  *
  * @author ad
  */
-class RunnablePianist implements Runnable {
-   private Thread thread;
-   private final String threadName;
-   private final Transcription transcription;
-   public Pianist pianist;
-   
-   RunnablePianist( String name, Transcription transcription ) throws MidiUnavailableException{
-       this.threadName = name;
-       this.transcription = transcription;
-       this.pianist = new Pianist();
-   }
-   @Override
-   public void run() {
-       this.pianist.play(transcription);
-   }
-   
-   public void start ()
-   {
-      if (this.thread == null)
-      {
-         this.thread = new Thread (this, this.threadName);
-         this.thread.start ();
-      }
-   }
-   
-   public Thread getThread() {
-       return this.thread;
-   }
-
-}
 
 public class PianistTest {
     
