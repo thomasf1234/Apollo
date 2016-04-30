@@ -33,10 +33,10 @@ public class Pianist {
         //Tet code, and clean up the Transcription
         //count lost seconds to make up
         
-        while (index < transcription.pianoEvents.size() && isPlaying()) {
+        while (isPlaying() && index < transcription.pianoEvents.size()) {
             elapsedTime = (System.nanoTime() * Math.pow(10, -9)) - t0;
             
-            while (elapsedTime >= pianoEvent.time && isPlaying()) {
+            while (isPlaying() && elapsedTime >= pianoEvent.time) {
                 //System.out.println(pianoEvent.type + " @" + pianoEvent.time + " data: " + pianoEvent.data);
 
                 switch (pianoEvent.type) {
