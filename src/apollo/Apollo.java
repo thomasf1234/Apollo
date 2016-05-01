@@ -62,7 +62,7 @@ public class Apollo extends Application
                 double t = (currentNanoTime - startNanoTime) * Math.pow(10, -9); 
 
                 try {
-                    gc.drawImage( renderer.getSnapshot(runnablePianist.pianist, 1.0f), 0, 0 );
+                    gc.drawImage( renderer.getSnapshot(runnablePianist.pianist, 1.0f, t), 0, 0 );
                 } catch (IOException ex) {
                     Logger.getLogger(Apollo.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -77,7 +77,7 @@ public class Apollo extends Application
         System.out.println("Stage is closing");
         
         if(this.runnablePianist != null) {
-            this.runnablePianist.pianist.state = Pianist.State.FINISHED;
+            this.runnablePianist.pianist.finish();
         }
         // Save file
     }

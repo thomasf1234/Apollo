@@ -24,6 +24,7 @@ public class Snapshot {
 
     public BufferedImage background;
     private final BufferedImage[] DOWN_KEYS;
+    private final BufferedImage[] FUTURE;
     private static final int OCTAVE_WIDTH = 140;
     private final Map<String, Point> KEY_POSITION_MAP;
     public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
@@ -32,32 +33,52 @@ public class Snapshot {
         this.background = ImageIO.read(new File("images\\basic_background.png"));
         this.DOWN_KEYS = initializeDOWN_KEYS();
         this.KEY_POSITION_MAP = initializeKEY_POSITION_MAP();
+        this.FUTURE = initializeFUTURE();
     }
 
-    public Image getSnapshot(Pianist pianist, float scale) throws IOException {
+    public Image getSnapshot(Pianist pianist, float scale, double elapsedTime) throws IOException {
         BufferedImage image = new BufferedImage(this.background.getWidth(), this.background.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         g.drawImage(this.background, 0, 0, image.getWidth(), image.getHeight(), null);
 
-        for (int midiNoteNumber=9; midiNoteNumber<97; midiNoteNumber++) {
-            int velocity = pianist.piano.getNoteState(midiNoteNumber);   
-            if (velocity > 0) {
-              String noteName = noteNameFor(midiNoteNumber);
-              int octave = octaveFor(midiNoteNumber);
-              try {
-                  g.drawImage(this.DOWN_KEYS[midiNoteNumber % 12], this.KEY_POSITION_MAP.get(noteName+octave).getX(), this.KEY_POSITION_MAP.get(noteName+octave).getY(), null);        
-              } catch(Exception e) {
-                  
-              }
-            }
-        }    
+ //       renderFuture(pianist.currentTranscription, 10.0f, g, elapsedTime);
+        renderKeybed(pianist.piano, g);    
         
         BufferedImage scaledImage = scale(image, scale);
         //ImageIO.write(scaledImage, "png", new File("tmp\\saved.png"));
 
         return SwingFXUtils.toFXImage(scaledImage, null);
     }
-
+    
+//    public void renderFuture(Transcription transcription, double howFar, Graphics2D g, double elapsedTime) {
+//      for (PianoEvent pianoEvent : transcription.pianoEvents) {
+//        if (pianoEvent.time > elapsedTime || pianoEvent.time < elapsedTime + howFar) {
+//          if (pianoEvent.type == PianoEvent.NOTE_ON) {
+//            int midiNoteNumber = (int) pianoEvent.data.get("key");
+//            int octave = octaveFor(midiNoteNumber);
+//            String noteName = noteNameFor(midiNoteNumber); 
+//            if (noteName == NOTE_NAMES[0]) {
+//                g.drawImage(this.FUTURE[0], this.KEY_POSITION_MAP.get(noteName+octave).getX(), 599-(pianoEvent.time-elapsedTime), );
+//            }
+//          }  
+//        } 
+//      }   
+//    }
+    
+    public void renderKeybed(Piano piano, Graphics2D g) {
+        for (int midiNoteNumber=9; midiNoteNumber<97; midiNoteNumber++) {
+            int velocity = piano.getNoteState(midiNoteNumber);   
+            if (velocity > 0) {
+              String noteName = Note.noteNameFor(midiNoteNumber);
+              try {
+                  g.drawImage(this.DOWN_KEYS[midiNoteNumber % 12], this.KEY_POSITION_MAP.get(noteName).getX(), this.KEY_POSITION_MAP.get(noteName).getY(), null);        
+              } catch(Exception e) {
+                  
+              }
+            }
+        }
+    }
+    
     public BufferedImage scale(BufferedImage bufferedImage, float scale) {
         BufferedImage scaledBufferedImage = new BufferedImage(Math.round(scale * bufferedImage.getWidth()),
                 Math.round(scale * bufferedImage.getHeight()),
@@ -114,11 +135,11 @@ public class Snapshot {
         return array;
     }
     
-    private String noteNameFor(int midiNoteNumber) { 
-        return NOTE_NAMES[midiNoteNumber % 12];
-    }
-    
-    private int octaveFor(int midiNoteNumber) { 
-        return (midiNoteNumber / 12) - 1;
+    private static BufferedImage[] initializeFUTURE() throws IOException {
+        BufferedImage[] array = new BufferedImage[2];
+        array[0] = ImageIO.read(new File("images\\white_key_future.png")); 
+        array[1] = ImageIO.read(new File("images\\black_key_future.png")); 
+        
+        return array;
     }
 }

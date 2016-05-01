@@ -7,10 +7,7 @@ package apollo;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -21,6 +18,32 @@ public class Transcription {
     
     public Transcription(List<PianoEvent> pianoEvents) {
         this.pianoEvents = sortPianoEventsChronologically(pianoEvents);
+    }
+  
+    public List<Note> toNotes() {
+        List<Note> notes = new ArrayList<>();
+
+        for (int i = 0; i < this.pianoEvents.size(); i++) {
+            if (this.pianoEvents.get(i).type == PianoEvent.NOTE_ON) {
+                for (int j = i + 1; j < this.pianoEvents.size(); j++) {
+                    int iKey = (int) this.pianoEvents.get(i).data.get("key");
+                    int iVelocity = (int) this.pianoEvents.get(i).data.get("velocity");
+
+                    if (this.pianoEvents.get(j).type == PianoEvent.NOTE_OFF) {
+                        int jKey = (int) this.pianoEvents.get(j).data.get("key");
+
+                        if (jKey == iKey) {
+                            Interval interval = new Interval(this.pianoEvents.get(i).time, this.pianoEvents.get(j).time);
+                            Note note = new Note(iKey, iVelocity, interval);
+                            notes.add(note);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return notes;
     }
     
     private List<PianoEvent> sortPianoEventsChronologically(List<PianoEvent> pianoEvents){
