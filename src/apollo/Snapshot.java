@@ -36,12 +36,12 @@ public class Snapshot {
         this.FUTURE = initializeFUTURE();
     }
 
-    public Image getSnapshot(Pianist pianist, float scale, double elapsedTime) throws IOException {
+    public Image getSnapshot(Pianist pianist, float scale) throws IOException {
         BufferedImage image = new BufferedImage(this.background.getWidth(), this.background.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         g.drawImage(this.background, 0, 0, image.getWidth(), image.getHeight(), null);
 
-        //renderInterval(g, pianist.currentTranscription, new Interval(elapsedTime, elapsedTime + 10.0f));
+        renderInterval(g, pianist.transcription, new Interval(pianist.elapsedTime, pianist.elapsedTime + 6.0f));
         renderKeybed(pianist.piano, g);    
         
         BufferedImage scaledImage = scale(image, scale);

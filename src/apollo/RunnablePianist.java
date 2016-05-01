@@ -5,6 +5,8 @@
  */
 package apollo;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.midi.MidiUnavailableException;
 
 /**
@@ -15,18 +17,20 @@ public class RunnablePianist implements Runnable {
 
     private Thread thread;
     private final String threadName;
-    private final Transcription transcription;
     public Pianist pianist;
 
-    RunnablePianist(String name, Transcription transcription) throws MidiUnavailableException {
+    RunnablePianist(String name) throws MidiUnavailableException {
         this.threadName = name;
-        this.transcription = transcription;
         this.pianist = new Pianist();
     }
 
     @Override
     public void run() {
-        this.pianist.play(transcription);
+        try {
+            this.pianist.play();
+        } catch (NoSuchFieldException ex) {
+            Logger.getLogger(RunnablePianist.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void start() {

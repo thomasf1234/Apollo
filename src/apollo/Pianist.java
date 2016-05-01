@@ -13,32 +13,31 @@ import javax.sound.midi.MidiUnavailableException;
  */
 public class Pianist {
     public enum State { NOT_STARTED, PLAYING, FINISHED }  
-    public final Piano piano;
+    public Piano piano;
     public State state;
-    public Transcription currentTranscription;
+    public Transcription transcription;
+    public double elapsedTime;
 
     public Pianist() throws MidiUnavailableException {
         this.piano = new Piano();
         this.state = State.NOT_STARTED;
     }
 
-    public void play(Transcription transcription) {
-        double t0 = System.nanoTime() * Math.pow(10, -9);
-        double elapsedTime = 0;
-        int index = 0;
-        this.currentTranscription = transcription;
-        this.state = State.PLAYING;
-
-        PianoEvent pianoEvent = transcription.pianoEvents.get(index);
-        //timing appears right, but lose a second over 3minutes most likely because if the miliseconds lost when we go to check 
-        //need to optimize, and install pedalling etc.
-        //Tet code, and clean up the Transcription
-        //count lost seconds to make up
+    //plays transcription
+    public void play() throws NoSuchFieldException {
+        if (this.transcription == null)
+            throw new NoSuchFieldException("no transcription to play");
         
-        while (isPlaying() && index < transcription.pianoEvents.size()) {
-            elapsedTime = (System.nanoTime() * Math.pow(10, -9)) - t0;
+        double t0 = System.nanoTime() * Math.pow(10, -9);
+        this.elapsedTime = 0;        
+        int index = 0;
+        this.state = State.PLAYING;
+        PianoEvent pianoEvent = this.transcription.pianoEvents.get(index);
+        
+        while (isPlaying() && index < this.transcription.pianoEvents.size()) {
+            this.elapsedTime = (System.nanoTime() * Math.pow(10, -9)) - t0;
             
-            while (isPlaying() && elapsedTime >= pianoEvent.time) {
+            while (isPlaying() && this.elapsedTime >= pianoEvent.time) {
                 //System.out.println(pianoEvent.type + " @" + pianoEvent.time + " data: " + pianoEvent.data);
 
                 switch (pianoEvent.type) {
@@ -55,17 +54,19 @@ public class Pianist {
                         break;
                 }
 
-                if (index == transcription.pianoEvents.size() - 1) {
+                if (index == this.transcription.pianoEvents.size() - 1) {
                     finish();
                     break;
                 } else {
                     index++;
-                    pianoEvent = transcription.pianoEvents.get(index);
+                    pianoEvent = this.transcription.pianoEvents.get(index);
                 }
             }
         }
-        
-        System.out.println("@" + elapsedTime + " NOW FINISHED");
+    }
+    
+    public void setTranscription(Transcription transcription) {
+        this.transcription = transcription;
     }
     
     public boolean isPlaying() {

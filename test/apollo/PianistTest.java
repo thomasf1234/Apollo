@@ -82,7 +82,9 @@ public class PianistTest {
     @Test
     public void testPlay_test2mid() throws MidiUnavailableException, InvalidMidiDataException, IOException, InterruptedException {
         System.out.println("play");
-        RunnablePianist runnablePianist = new RunnablePianist("testPianist", new Transcriber().transcribe("test\\samples\\test2.mid"));
+        RunnablePianist runnablePianist = new RunnablePianist("testPianist");
+        Transcription transcription = new Transcriber().transcribe("test\\samples\\test2.mid");
+        runnablePianist.pianist.setTranscription(transcription);
         runnablePianist.pianist.piano.setMute(true);
         assertEquals(Pianist.State.NOT_STARTED, runnablePianist.pianist.state);
         runnablePianist.start();

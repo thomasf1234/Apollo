@@ -27,6 +27,7 @@ import javafx.animation.AnimationTimer;
 public class Apollo extends Application 
 {
     public RunnablePianist runnablePianist;
+    public static final float SCALE = 1.0f;
     
     public static void main(String[] args) throws MidiUnavailableException, InvalidMidiDataException, IOException {
         launch(args);
@@ -41,17 +42,17 @@ public class Apollo extends Application
         Scene theScene = new Scene( root );
         theStage.setScene( theScene );
 
-        Canvas canvas = new Canvas( 1041, 724 );
+        Canvas canvas = new Canvas( 1041 * SCALE, 724 * SCALE );
         root.getChildren().add( canvas );
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        final long startNanoTime = System.nanoTime();
 
         //this.runnablePianist = new RunnablePianist("Pianist", new Transcriber().transcribe("test\\samples\\test.mid"));
-        this.runnablePianist = new RunnablePianist("Pianist", new Transcriber().transcribe("test\\samples\\test2.mid"));
-        //this.runnablePianist = new RunnablePianist("Pianist", new Transcriber().transcribe("C:\\Users\\ad\\Documents\\my_songs\\tom_odell_-_.mid"));
-
+        //this.runnablePianist = new RunnablePianist("Pianist", new Transcriber().transcribe("test\\samples\\test2.mid"));
+        this.runnablePianist = new RunnablePianist("Pianist");
+        Transcription transcription = new Transcriber().transcribe("C:\\Users\\ad\\Documents\\my_songs\\tom_odell_-_.mid");
+        runnablePianist.pianist.setTranscription(transcription);
         runnablePianist.start();
         Snapshot renderer = new Snapshot();
         
@@ -60,10 +61,8 @@ public class Apollo extends Application
             @Override
             public void handle(long currentNanoTime)
             {
-                double t = (currentNanoTime - startNanoTime) * Math.pow(10, -9); 
-
                 try {
-                    gc.drawImage( renderer.getSnapshot(runnablePianist.pianist, 1.0f, t-0.9), 0, 0 );
+                    gc.drawImage( renderer.getSnapshot(runnablePianist.pianist, SCALE), 0, 0 );
                 } catch (IOException ex) {
                     Logger.getLogger(Apollo.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -80,7 +79,5 @@ public class Apollo extends Application
         if(this.runnablePianist != null) {
             this.runnablePianist.pianist.finish();
         }
-        // Save file
     }
 }
-//http://stackoverflow.com/questions/26619566/javafx-stage-close-handler

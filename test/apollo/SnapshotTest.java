@@ -52,12 +52,11 @@ public class SnapshotTest {
         Pianist pianist = new Pianist();
         float scale = 1.0F;
         Snapshot instance = new Snapshot();
+        Transcription transcription = new Transcriber().transcribe("test\\samples\\test.mid");
+        pianist.setTranscription(transcription);
+        pianist.elapsedTime = 1.0;
         
-        for(int i=60; i< 90; i++) {
-          pianist.piano.noteOn(i, 1);    
-        }
-       
-        Image actualSnapshot = instance.getSnapshot(pianist, scale, 0.0);
+        Image actualSnapshot = instance.getSnapshot(pianist, scale);
         ImageIO.write(SwingFXUtils.fromFXImage(actualSnapshot, null), "png", new File("tmp\\actual.png"));
         
         assertEquals(true, Utilities.compareFiles("tmp\\actual.png", "test\\samples\\testGetSnapshot.png"));     
