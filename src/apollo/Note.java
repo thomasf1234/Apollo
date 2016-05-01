@@ -29,6 +29,10 @@ public class Note {
         return Note.octaveFor(this.midiNoteNumber);
     }
     
+    public boolean isBlackKey() {
+      return NOTE_NAMES[this.midiNoteNumber % 12].length() == 2;
+    }
+    
     public static String noteNameFor(int midiNoteNumber) {
         return NOTE_NAMES[midiNoteNumber % 12] + octaveFor(midiNoteNumber);  
     }

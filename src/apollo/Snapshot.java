@@ -45,26 +45,38 @@ public class Snapshot {
         renderKeybed(pianist.piano, g);    
         
         BufferedImage scaledImage = scale(image, scale);
-        //ImageIO.write(scaledImage, "png", new File("tmp\\saved.png"));
 
         return SwingFXUtils.toFXImage(scaledImage, null);
     }
-    
-//    public void renderInterval(Graphics2D g, Transcription transcription, Interval interval) {
-//      for (Note note : transcription.notes) {
-//        if (note.interval.intersects(interval))
-//        if (note.time > elapsedTime || pianoEvent.time < elapsedTime + howFar) {
-//          if (pianoEvent.type == PianoEvent.NOTE_ON) {
-//            int midiNoteNumber = (int) pianoEvent.data.get("key");
-//            int octave = octaveFor(midiNoteNumber);
-//            String noteName = noteNameFor(midiNoteNumber); 
-//            if (noteName == NOTE_NAMES[0]) {
-//                g.drawImage(this.FUTURE[0], this.KEY_POSITION_MAP.get(noteName+octave).getX(), 599-(pianoEvent.time-elapsedTime), );
-//            }
-//          }  
-//        } 
-//      }   
-//    }
+  
+    public void renderInterval(Graphics2D g, Transcription transcription, Interval interval) {
+      for (Note note : transcription.notes) {
+        if (note.interval.intersects(interval)) { 
+            BufferedImage base;
+            if (note.isBlackKey()) 
+              base = this.FUTURE[1];
+            else
+              base = this.FUTURE[0];
+           
+           int x = this.KEY_POSITION_MAP.get(note.getNoteName()).getX();
+           int y;
+           int width = base.getWidth();
+           int height;
+           
+           if (note.interval.getEndTime() > interval.getEndTime()) 
+               y = 47;
+           else 
+               y = (int) (47 + ((interval.getEndTime() - note.interval.getEndTime()) / interval.getDuration()) * 543);
+           
+           if (note.interval.getStartTime() < interval.getStartTime())
+               height = 590 - y;
+           else
+               height = 590 - y - (int)(((note.interval.getStartTime() - interval.getStartTime()) / interval.getDuration()) * 543);
+               
+           g.drawImage(base, x, y, width, height, null);   
+        }
+      }   
+    }
     
     public void renderKeybed(Piano piano, Graphics2D g) {
         for (int midiNoteNumber=9; midiNoteNumber<97; midiNoteNumber++) {

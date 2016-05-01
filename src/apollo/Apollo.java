@@ -48,8 +48,9 @@ public class Apollo extends Application
 
         final long startNanoTime = System.nanoTime();
 
-        //this.runnablePianist = new RunnablePianist("Pianist", new Transcriber().transcribe("test\\samples\\test2.mid"));
-        this.runnablePianist = new RunnablePianist("Pianist", new Transcriber().transcribe("C:\\Users\\ad\\Documents\\my_songs\\tom_odell_-_.mid"));
+        //this.runnablePianist = new RunnablePianist("Pianist", new Transcriber().transcribe("test\\samples\\test.mid"));
+        this.runnablePianist = new RunnablePianist("Pianist", new Transcriber().transcribe("test\\samples\\test2.mid"));
+        //this.runnablePianist = new RunnablePianist("Pianist", new Transcriber().transcribe("C:\\Users\\ad\\Documents\\my_songs\\tom_odell_-_.mid"));
 
         runnablePianist.start();
         Snapshot renderer = new Snapshot();
@@ -62,7 +63,7 @@ public class Apollo extends Application
                 double t = (currentNanoTime - startNanoTime) * Math.pow(10, -9); 
 
                 try {
-                    gc.drawImage( renderer.getSnapshot(runnablePianist.pianist, 1.0f, t), 0, 0 );
+                    gc.drawImage( renderer.getSnapshot(runnablePianist.pianist, 1.0f, t-0.9), 0, 0 );
                 } catch (IOException ex) {
                     Logger.getLogger(Apollo.class.getName()).log(Level.SEVERE, null, ex);
                 }
