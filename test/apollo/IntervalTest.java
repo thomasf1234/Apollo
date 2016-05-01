@@ -75,4 +75,23 @@ public class IntervalTest {
         double result = instance.getDuration();
         assertEquals(expResult, result, delta);
     }   
+
+    /**
+     * Test of intersects method, of class Interval.
+     */
+    @Test
+    public void testIntersects() {
+        System.out.println("intersects");
+        Interval intervalA = new Interval(3.0, 10.0);
+          
+        assertEquals(true, intervalA.intersects(new Interval(2.0, 4.0)));
+        assertEquals(true, intervalA.intersects(new Interval(9.99, 13.0)));
+        assertEquals(true, intervalA.intersects(new Interval(1.0, 13.0)));
+        assertEquals(true, intervalA.intersects(new Interval(4.0, 5.0)));
+        
+        assertEquals(false, intervalA.intersects(new Interval(2.0, 3.0)));
+        assertEquals(false, intervalA.intersects(new Interval(10.0, 11.0)));
+        assertEquals(false, intervalA.intersects(new Interval(1.0, 2.0)));
+        assertEquals(false, intervalA.intersects(new Interval(11.0, 12.0)));
+    }
 }

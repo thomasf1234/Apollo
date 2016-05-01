@@ -15,6 +15,7 @@ public class Pianist {
     public enum State { NOT_STARTED, PLAYING, FINISHED }  
     public final Piano piano;
     public State state;
+    public Transcription currentTranscription;
 
     public Pianist() throws MidiUnavailableException {
         this.piano = new Piano();
@@ -25,6 +26,7 @@ public class Pianist {
         double t0 = System.nanoTime() * Math.pow(10, -9);
         double elapsedTime = 0;
         int index = 0;
+        this.currentTranscription = transcription;
         this.state = State.PLAYING;
 
         PianoEvent pianoEvent = transcription.pianoEvents.get(index);
@@ -41,10 +43,10 @@ public class Pianist {
 
                 switch (pianoEvent.type) {
                     case (PianoEvent.NOTE_ON):
-                        this.piano.noteOn((int) pianoEvent.data.get("key"), (int) pianoEvent.data.get("velocity"));
+                        this.piano.noteOn((int) pianoEvent.data.get("midiNoteNumber"), (int) pianoEvent.data.get("velocity"));
                         break;
                     case (PianoEvent.NOTE_OFF): 
-                        this.piano.noteOff((int) pianoEvent.data.get("key"));
+                        this.piano.noteOff((int) pianoEvent.data.get("midiNoteNumber"));
                         break;
                     case (PianoEvent.SUSTAIN_PEDAL):
                         this.piano.sustainPedalUpdate((int) pianoEvent.data.get("value"));

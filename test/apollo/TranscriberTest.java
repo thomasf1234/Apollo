@@ -59,7 +59,7 @@ public class TranscriberTest {
         
         PianoEvent pianoEvent4 = (PianoEvent) transcription1.pianoEvents.get(4);
         assertEquals("NOTE_ON", pianoEvent4.type);
-        assertEquals(64, (int) pianoEvent4.data.get("key"));
+        assertEquals(64, (int) pianoEvent4.data.get("midiNoteNumber"));
         assertEquals(13, (int) pianoEvent4.data.get("velocity"));
         assertEquals(2.6576918427602827, pianoEvent4.time, delta);
 
@@ -76,7 +76,7 @@ public class TranscriberTest {
         
         PianoEvent pianoEvent2 = (PianoEvent) transcription2.pianoEvents.get(2);
         assertEquals("NOTE_ON", pianoEvent2.type);
-        assertEquals(46, (int) pianoEvent2.data.get("key"));
+        assertEquals(46, (int) pianoEvent2.data.get("midiNoteNumber"));
         assertEquals(30, (int) pianoEvent2.data.get("velocity"));
         assertEquals(0.8998046875, pianoEvent2.time, delta);
         

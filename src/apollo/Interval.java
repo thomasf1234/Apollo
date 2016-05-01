@@ -29,4 +29,17 @@ public class Interval {
     public double getDuration() {
         return (this.end_time - this.start_time);
     }
+    
+    public boolean intersects(Interval interval) {
+      boolean doesIntersect = false;
+
+      if (interval.getStartTime() < this.getEndTime() && interval.getStartTime() > this.getStartTime()) 
+          doesIntersect = true;
+      else if (interval.getEndTime() < this.getEndTime() && interval.getEndTime() > this.getStartTime())
+          doesIntersect = true;
+      else if (interval.getStartTime() < this.getStartTime() && interval.getEndTime() > this.getEndTime())
+          doesIntersect = true;
+      
+      return doesIntersect;
+    }
 }

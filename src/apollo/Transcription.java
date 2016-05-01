@@ -15,9 +15,11 @@ import java.util.List;
  */
 public class Transcription {
     public List<PianoEvent> pianoEvents;
+    public List<Note> notes;
     
     public Transcription(List<PianoEvent> pianoEvents) {
         this.pianoEvents = sortPianoEventsChronologically(pianoEvents);
+        this.notes = toNotes();
     }
   
     public List<Note> toNotes() {
@@ -25,16 +27,16 @@ public class Transcription {
 
         for (int i = 0; i < this.pianoEvents.size(); i++) {
             if (this.pianoEvents.get(i).type == PianoEvent.NOTE_ON) {
+                int iMidiNoteNumber = (int) this.pianoEvents.get(i).data.get("midiNoteNumber");
+                int iVelocity = (int) this.pianoEvents.get(i).data.get("velocity");
+
                 for (int j = i + 1; j < this.pianoEvents.size(); j++) {
-                    int iKey = (int) this.pianoEvents.get(i).data.get("key");
-                    int iVelocity = (int) this.pianoEvents.get(i).data.get("velocity");
-
                     if (this.pianoEvents.get(j).type == PianoEvent.NOTE_OFF) {
-                        int jKey = (int) this.pianoEvents.get(j).data.get("key");
+                        int jMidiNoteNumber = (int) this.pianoEvents.get(j).data.get("midiNoteNumber");
 
-                        if (jKey == iKey) {
+                        if (jMidiNoteNumber == iMidiNoteNumber) {
                             Interval interval = new Interval(this.pianoEvents.get(i).time, this.pianoEvents.get(j).time);
-                            Note note = new Note(iKey, iVelocity, interval);
+                            Note note = new Note(iMidiNoteNumber, iVelocity, interval);
                             notes.add(note);
                             break;
                         }

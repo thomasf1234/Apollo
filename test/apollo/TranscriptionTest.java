@@ -45,7 +45,7 @@ public class TranscriptionTest {
     public void testProperties() {
         List<PianoEvent> pianoEvents = new ArrayList<PianoEvent>();
         Map data1 = new HashMap();
-        data1.put("key", 66);
+        data1.put("midiNoteNumber", 66);
         data1.put("velocity", 60);
         pianoEvents.add(new PianoEvent(PianoEvent.NOTE_ON, 2.0, data1));
 
@@ -66,22 +66,22 @@ public class TranscriptionTest {
         
         List<PianoEvent> pianoEvents = new ArrayList<PianoEvent>();
         Map data1 = new HashMap();
-        data1.put("key", 66);
+        data1.put("midiNoteNumber", 66);
         data1.put("velocity", 60);
         pianoEvents.add(new PianoEvent(PianoEvent.NOTE_ON, 2.0, data1));
         
         Map data2 = new HashMap();
-        data2.put("key", 66);
+        data2.put("midiNoteNumber", 66);
         data2.put("velocity", 0);
         pianoEvents.add(new PianoEvent(PianoEvent.NOTE_OFF, 2.3, data2));
         
         Map data3 = new HashMap();
-        data3.put("key", 70);
+        data3.put("midiNoteNumber", 70);
         data3.put("velocity", 30);
         pianoEvents.add(new PianoEvent(PianoEvent.NOTE_ON, 2.2, data3));
         
         Map data4 = new HashMap();
-        data4.put("key", 70);
+        data4.put("midiNoteNumber", 70);
         data4.put("velocity", 0);
         pianoEvents.add(new PianoEvent(PianoEvent.NOTE_OFF, 3.9, data4));
         

@@ -30,7 +30,7 @@ public class Transcriber {
                  int key = ShortMessage.getData1();
                  int velocity = ShortMessage.getData2();
                  Map data = new HashMap();
-                 data.put("key", key);
+                 data.put("midiNoteNumber", key);
                  data.put("velocity", velocity);
                  pianoEvents.add(new PianoEvent(PianoEvent.NOTE_ON, chronologicalMidiEvents[i].time, data));
              } else if (chronologicalMidiEvents[i].isNoteOff()) {
@@ -38,7 +38,7 @@ public class Transcriber {
                  int key = ShortMessage.getData1();
                  int velocity = ShortMessage.getData2();
                  Map data = new HashMap();
-                 data.put("key", key);
+                 data.put("midiNoteNumber", key);
                  data.put("velocity", velocity);
                  pianoEvents.add(new PianoEvent(PianoEvent.NOTE_OFF, chronologicalMidiEvents[i].time, data));   
              } 

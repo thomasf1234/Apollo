@@ -41,7 +41,7 @@ public class Snapshot {
         Graphics2D g = image.createGraphics();
         g.drawImage(this.background, 0, 0, image.getWidth(), image.getHeight(), null);
 
- //       renderFuture(pianist.currentTranscription, 10.0f, g, elapsedTime);
+        //renderInterval(g, pianist.currentTranscription, new Interval(elapsedTime, elapsedTime + 10.0f));
         renderKeybed(pianist.piano, g);    
         
         BufferedImage scaledImage = scale(image, scale);
@@ -50,9 +50,10 @@ public class Snapshot {
         return SwingFXUtils.toFXImage(scaledImage, null);
     }
     
-//    public void renderFuture(Transcription transcription, double howFar, Graphics2D g, double elapsedTime) {
-//      for (PianoEvent pianoEvent : transcription.pianoEvents) {
-//        if (pianoEvent.time > elapsedTime || pianoEvent.time < elapsedTime + howFar) {
+//    public void renderInterval(Graphics2D g, Transcription transcription, Interval interval) {
+//      for (Note note : transcription.notes) {
+//        if (note.interval.intersects(interval))
+//        if (note.time > elapsedTime || pianoEvent.time < elapsedTime + howFar) {
 //          if (pianoEvent.type == PianoEvent.NOTE_ON) {
 //            int midiNoteNumber = (int) pianoEvent.data.get("key");
 //            int octave = octaveFor(midiNoteNumber);
